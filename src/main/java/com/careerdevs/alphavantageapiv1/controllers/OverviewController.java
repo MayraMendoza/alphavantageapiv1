@@ -29,6 +29,7 @@ public class OverviewController {
 
 
         } catch (Exception e) {
+            System.out.println(e.getClass());
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
