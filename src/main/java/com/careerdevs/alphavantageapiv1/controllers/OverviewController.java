@@ -1,7 +1,10 @@
 package com.careerdevs.alphavantageapiv1.controllers;
 
+import com.careerdevs.alphavantageapiv1.models.Overview;
+import com.careerdevs.alphavantageapiv1.utils.ApiErrorHandling;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,15 +25,18 @@ public class OverviewController {
     public ResponseEntity<?> testOverview(RestTemplate restTemplate) {
         try {
 
-            String url = BASE_URL + "&symbol=IBM&apikey="+ env.getProperty("AV_API_KEY");
+            String url = BASE_URL + "&symbol=IBM&apikey=" + env.getProperty("AV_API_KEY");
 
-            String responseBody = restTemplate.getForObject(url, String.class);
-            return  ResponseEntity.ok(responseBody);
+            Overview responseBody = restTemplate.getForObject(url, Overview.class);
+            return ResponseEntity.ok(responseBody);
+
+        } catch(IllegalArgumentException e){
+            return ApiErrorHandling.customApiError(
+                    "Error In testOverview: check URL used for AV Request", HttpStatus.INTERNAL_SERVER_ERROR);
 
 
         } catch (Exception e) {
-            System.out.println(e.getClass());
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ApiErrorHandling.genericApiError(e);
         }
     }
 
@@ -40,12 +46,22 @@ public class OverviewController {
 
             String url = BASE_URL + "&symbol=" + symbol+ "&apikey=" + env.getProperty("AV_API_KEY");
 
-            String responseBody = restTemplate.getForObject(url, String.class);
-            return  ResponseEntity.ok(responseBody);
+            Overview responseBody = restTemplate.getForObject(url, Overview.class);
+
+
+            if(responseBody == null){
+                return ApiErrorHandling.customApiError("Did not receive response from AV",
+                        HttpStatus.INTERNAL_SERVER_ERROR);
+
+            }else if (responseBody.equals("{}")){
+                return ApiErrorHandling.customApiError("Invalid stock symbol: "+symbol,
+                        HttpStatus.BAD_REQUEST);
+            }
+            return ResponseEntity.ok(responseBody);
 
 
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(e.getMessage());
+            return ApiErrorHandling.genericApiError(e);
         }
     }
 }
