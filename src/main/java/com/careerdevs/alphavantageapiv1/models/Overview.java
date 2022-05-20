@@ -118,4 +118,24 @@ public class Overview {
     public String getDividendDate() {
         return DividendDate;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"Id\":" + Id +
+                ", \"symbol\":\"" + symbol + '"' +
+                ", \"assetType\":\"" + assetType + '"' +
+                ", \"name\":\"" + name + '"' +
+                ", \"exchange\":\"" + exchange + '"' +
+                ", \"currency\":\"" + currency + '"' +
+                ", \"country\":\"" + country + '"' +
+                ", \"sector\":\"" + sector + '"' +
+                ", \"industry\":\"" + industry + '"' +
+                ", \"marketCap\":" + marketCap +
+                ", \"yearHigh\":" + yearHigh +
+                ", \"yearLow\":" + yearLow +
+                ", \"DividendDate\":\"" + DividendDate + '"' +
+                '}';
+    }
 }
+
