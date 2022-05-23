@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @RestController
 @RequestMapping("/api/overview")
 public class OverviewController {
@@ -166,4 +168,57 @@ public class OverviewController {
             return ApiErrorHandling.genericApiError(e);
         }
     }
+
+    // GET ONE OVERVIEW BY ID FROM DATABASE
+    @GetMapping("/get/{Id}")
+    public ResponseEntity<?> getById(@PathVariable("Id")String overViewId){
+        try{
+            if(ApiErrorHandling.isStrNan(overViewId)){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId+ ": is not a valid id");
+
+            }
+            long oId = Long.parseLong(overViewId);
+            Optional<Overview> foundOverView = overviewRepository.findById(oId);
+            if(foundOverView.isEmpty()){
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Overview with id: "+ oId + " not found.");
+
+            }
+            return new ResponseEntity<>(foundOverView, HttpStatus.OK);
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode());
+
+
+        }catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+    //try deleting something from database by ID
+
+    @DeleteMapping("/{Id}")
+    public ResponseEntity<?> deleteOverviewById (@PathVariable("Id") String overViewId){
+        try{
+            if (ApiErrorHandling.isStrNan(overViewId)){
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId + ": is not Valid");
+
+            }
+            long oId = Long.parseLong(overViewId);
+            Optional<Overview> deleteOverview = overviewRepository.findById(oId);
+
+            if (deleteOverview.isEmpty()){
+                throw new HttpClientErrorException(HttpStatus.NOT_FOUND, "Overview with id" + overViewId + " was not found");
+
+            }
+            overviewRepository.deleteById(oId);
+            return new ResponseEntity<>(deleteOverview, HttpStatus.OK);
+
+        }catch (HttpClientErrorException e){
+            return ApiErrorHandling.customApiError(e.getMessage(), e.getStatusCode());
+
+        }catch (Exception e){
+            return ApiErrorHandling.genericApiError(e);
+        }
+    }
+
+
 }

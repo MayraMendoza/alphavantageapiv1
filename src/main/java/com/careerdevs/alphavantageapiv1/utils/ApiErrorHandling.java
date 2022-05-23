@@ -12,4 +12,17 @@ public class ApiErrorHandling {
     public static ResponseEntity<?> customApiError(String message, HttpStatus status){
         return ResponseEntity.status(status).body(message);
     }
+
+    // check if string is a number
+    public static boolean isStrNan (String strNum){
+        if(strNum == null){
+            return true;
+        }
+        try{
+            Integer.parseInt(strNum);
+        }catch (NumberFormatException e){
+            return true;
+        }
+        return false;
+    }
 }
