@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -207,6 +208,47 @@ public class OverviewController {
             return ApiError.genericApiError(e);
         }
     }
+
+    @GetMapping("/symbol/{symbol}")
+    private ResponseEntity<?> getOverviewBySymbol(@PathVariable String symbol){
+        try{
+//            if(ApiError.isStrNan(overViewId)){
+//                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId+ ": is not a valid id");
+//
+//            }
+
+            Overview foundOverView = overviewRepository.findBySymbol(symbol);
+            if(foundOverView == null){
+                ApiError.throwErr(404, "Overview with symbol: "+ symbol + " not found.");
+
+
+            }
+            return ResponseEntity.ok(foundOverView);
+
+        }catch (HttpClientErrorException e){
+            return ApiError.customApiError(e.getMessage(),e.getStatusCode().value());
+        }catch (Exception e){
+            return ApiError.genericApiError(e);
+        }
+    }
+
+    // find by excahnge
+    @GetMapping("/exchange/{exchange}")
+    private ResponseEntity<?> getOverviewByExchange(@PathVariable String exchange){
+        try{
+            //take notes on 37:00
+            List<Overview> foundOverView = overviewRepository.findByExchange(exchange);
+            if(foundOverView.isEmpty()){
+                ApiError.throwErr(404, exchange + " did not match any overview.");
+            }
+            return ResponseEntity.ok(foundOverView);
+        }catch (HttpClientErrorException e){
+            return ApiError.customApiError(e.getMessage(),e.getStatusCode().value());
+        }catch (Exception e){
+            return ApiError.genericApiError(e);
+        }
+    }
+
 
     //try deleting something from database by ID
 
