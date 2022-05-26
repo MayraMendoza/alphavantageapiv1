@@ -26,64 +26,7 @@ public class OverviewController {
     private OverviewRepository overviewRepository;
     private final String BASE_URL = "https://www.alphavantage.co/query?function=OVERVIEW";
 
-    // test route
-    @GetMapping("/test")
-    public ResponseEntity<?> testOverview(RestTemplate restTemplate) {
-        try {
 
-            String url = BASE_URL + "&symbol=IBM&apikey=" + env.getProperty("AV_API_KEY");
-
-            Overview responseBody = restTemplate.getForObject(url, Overview.class);
-            return ResponseEntity.ok(responseBody);
-
-        } catch(IllegalArgumentException e){
-            return ApiError.customApiError(
-                    "Error In testOverview: check URL used for AV Request", 500);
-
-
-        } catch (Exception e) {
-            return ApiError.genericApiError(e);
-        }
-    }
-
-
-    // test upload to Database
-    @PostMapping("/test")
-    public ResponseEntity<?> testUploadOverview(RestTemplate restTemplate) {
-        try {
-
-            String url = BASE_URL + "&symbol=IBM&apikey=" + env.getProperty("AV_API_KEY");
-
-            Overview responseBody = restTemplate.getForObject(url, Overview.class);
-
-            if (responseBody == null) {
-                ApiError.throwErr(500, "Did not receive response from AV");
-
-            } else if (responseBody.getSymbol() == null) {
-                ApiError.throwErr(500, "No data retrieved from AV");
-            }
-
-            Overview saveOverview = overviewRepository.save(responseBody);
-
-            return ResponseEntity.ok(saveOverview);
-
-
-        }catch (HttpClientErrorException e){
-            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
-
-        }
-        catch (DataIntegrityViolationException e){
-            return ApiError.customApiError("Can not upload duplicate stock data", 400 );
-
-        } catch(IllegalArgumentException e){
-            return ApiError.customApiError(
-                    "Error In testOverview: check URL used for AV Request", 500);
-
-
-        } catch (Exception e) {
-            return ApiError.genericApiError(e);
-        }
-    }
 
     @GetMapping("/{symbol}")
     public ResponseEntity<?> dynamicOverview(RestTemplate restTemplate, @PathVariable String symbol){
