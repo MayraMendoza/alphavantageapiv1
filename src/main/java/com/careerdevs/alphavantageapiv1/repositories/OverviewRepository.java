@@ -10,5 +10,12 @@ public interface OverviewRepository extends CrudRepository<Overview, Long> {
      Overview findBySymbol(String symbol);
 
      List<Overview> findByExchange(String exchange);
+     List<Overview> findByCountry(String country);
+     List<Overview> findByCurrency(String currency);
+     List<Overview> findBySector(String sector);
+     List<Overview> findByAssetType(String assetType);
+
+     List<Overview> deleteByExchange(String exchange);
+
 
 }
