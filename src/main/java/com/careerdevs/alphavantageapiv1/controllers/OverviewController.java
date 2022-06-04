@@ -249,7 +249,7 @@ public class OverviewController {
     //    @Column(name= "asset_type", nullable = false)
     //    private String assetType;
     @GetMapping("/assetType/{assetType}")
-    private ResponseEntity<?> getOverviewByAsset (@PathVariable("assetType") String assetType){
+    private ResponseEntity<?> getOverviewByAsset (@PathVariable String assetType){
         try {
             List<Overview> findByOverview = overviewRepository.findByAssetType(assetType);
             if(findByOverview.isEmpty()){
@@ -293,29 +293,29 @@ public class OverviewController {
         }
     }
 
-    //delete by exchange
-    @DeleteMapping("/exchange/{exchange}")
-    public ResponseEntity<?> deleteByExchange (@PathVariable String exchange){
-        try{
-//            if (ApiError.isStrNan(exchange)){
-//                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, exchange + ": is not Valid");
+//    //delete by exchange
+//    @DeleteMapping("/exchange/{exchange}")
+//    public ResponseEntity<?> deleteByExchange (@PathVariable String exchange){
+//        try{
+////            if (ApiError.isStrNan(exchange)){
+////                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, exchange + ": is not Valid");
+////
+////            }
+//            List<Overview> deleteOverview = overviewRepository.findByExchange(exchange);
+//
+//            if (deleteOverview.isEmpty()){
+//                ApiError.throwErr(400,"Overview with id" + exchange + " did not match any overview");
+//
 //
 //            }
-            List<Overview> deleteOverview = overviewRepository.findByExchange(exchange);
-
-            if (deleteOverview.isEmpty()){
-                ApiError.throwErr(400,"Overview with id" + exchange + " did not match any overview");
-
-
-            }
-            overviewRepository.deleteByExchange(exchange);
-            return ResponseEntity.ok(deleteOverview);
-
-        }catch (HttpClientErrorException e){
-            return ApiError.customApiError(e.getMessage(),e.getStatusCode().value());
-        }catch (Exception e){
-            return ApiError.genericApiError(e);
-        }
-    }
+//            overviewRepository.deleteByExchange(exchange);
+//            return ResponseEntity.ok(deleteOverview);
+//
+//        }catch (HttpClientErrorException e){
+//            return ApiError.customApiError(e.getMessage(),e.getStatusCode().value());
+//        }catch (Exception e){
+//            return ApiError.genericApiError(e);
+//        }
+//    }
 
 }
