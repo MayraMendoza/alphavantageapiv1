@@ -16,6 +16,10 @@ public interface OverviewRepository extends CrudRepository<Overview, Long> {
      List<Overview> findByAssetType(String assetType);
 
      List<Overview> deleteByExchange(String exchange);
+     List<Overview> deleteByCurrency(String currency);
+     List<Overview> deleteByCountry(String country);
+     List<Overview> deleteByAssetType(String assetType);
+     List<Overview> deleteBySector(String sector);
 
 
 }
