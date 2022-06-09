@@ -412,5 +412,39 @@ public class OverviewController {
     }
 
 
+    @GetMapping("/marketCap/{marketCap}")
+    private ResponseEntity<?> getOverviewsBYMarketCap(@PathVariable Long marketCap) {
+        try {
+            List<Overview> foundOverview = overviewRepository.findByMarketCapGreaterThanEqual(marketCap);
+            if (foundOverview.isEmpty()) {
+                ApiError.throwErr(404, marketCap + "did not match any overview");
 
+
+            }
+            return ResponseEntity.ok(foundOverview);
+        } catch (HttpClientErrorException e) {
+            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+        } catch (Exception e) {
+            return ApiError.genericApiError(e);
+        }
+    }
+
+//    @GetMapping("/marketCap/{marketCap}")
+//    private ResponseEntity<?> getOverviewByMarketCap(@PathVariable Long marketCap) {
+//        try {
+//            List<Overview> foundOverview = overviewRepository.findByMarketCap(marketCap);
+//            if (foundOverview.isEmpty()) {
+//                ApiError.throwErr(404, marketCap + "did not match any overview");
+//
+//
+//            }
+//            return ResponseEntity.ok(foundOverview);
+//        } catch (HttpClientErrorException e) {
+//            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+//        } catch (Exception e) {
+//            return ApiError.genericApiError(e);
+//        }
+//
+//
+//    }
 }

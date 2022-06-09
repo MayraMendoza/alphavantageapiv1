@@ -21,5 +21,10 @@ public interface OverviewRepository extends CrudRepository<Overview, Long> {
      List<Overview> deleteByAssetType(String assetType);
      List<Overview> deleteBySector(String sector);
 
+     List<Overview> findByMarketCap(Long marketCap);
+
+     List<Overview> findByMarketCapGreaterThanEqual(Long marketCap);
+//     List<Overview> findByMarketCapLessThanEqual(Long marketCap);
+
 
 }
