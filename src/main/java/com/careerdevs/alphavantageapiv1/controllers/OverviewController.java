@@ -13,6 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,6 +86,46 @@ public class OverviewController {
             return ApiError.genericApiError(e);
         }
     }
+
+    // Create test PostMapping that will upload multiple stock overviews at a time.
+    @PostMapping("/testUpload")
+    public ResponseEntity<?> uploadOverviewBySymbol(RestTemplate restTemplate) {
+        try {
+
+            String[] testSymbols = {"AAPL", "IBM", "TM", "GS", "GOOG"};
+            ArrayList<Overview> overviews = new ArrayList<>();
+            for(int i=0; i< testSymbols.length; i++) {
+                String symbol = testSymbols[i];
+
+                String url = BASE_URL + "&symbol=" + symbol + "&apikey=" + env.getProperty("AV_API_KEY");
+
+                Overview responseBody = restTemplate.getForObject(url, Overview.class);
+
+
+
+                if (responseBody == null) {
+                    ApiError.throwErr(500, "Did not receive response from AV");
+
+                } else if (responseBody.getSymbol() == null) {
+                    ApiError.throwErr(404, "Invalid stock symbol: " + symbol);
+
+                }
+                overviews.add(responseBody);
+
+            }
+            Iterable<Overview> savedOverview = overviewRepository.saveAll(overviews);
+            return ResponseEntity.ok(savedOverview);
+
+        } catch (HttpClientErrorException e) {
+            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+        } catch (DataIntegrityViolationException e) {
+            return ApiError.customApiError("Can not upload duplicate stock data", 400);
+
+        } catch (Exception e) {
+            return ApiError.genericApiError(e);
+        }
+    }
+
 
     // get all delete all -- from the sql database.
 
