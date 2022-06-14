@@ -15,9 +15,9 @@ import org.springframework.web.client.RestTemplate;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Locale;
 
-@Transactional
+
 @RestController
 @RequestMapping("/api/overview")
 public class OverviewController {
@@ -164,32 +164,32 @@ public class OverviewController {
         }
     }
 
-    // GET ONE OVERVIEW BY ID FROM DATABASE
-    @GetMapping("/getbyid/{Id}")
-    private ResponseEntity<?> getById(@PathVariable("Id") String overViewId) {
-        try {
-            if (ApiError.isStrNan(overViewId)) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId + ": is not a valid id");
-
-            }
-            long oId = Long.parseLong(overViewId);
-            Optional<Overview> foundOverView = overviewRepository.findById(oId);
-            if (foundOverView.isEmpty()) {
-                ApiError.throwErr(404, "Overview with id: " + oId + " not found.");
-
-
-            }
-            return new ResponseEntity<>(foundOverView, HttpStatus.OK);
-//        }catch (NumberFormatException e){
-//            return ApiErrorHandling.customApiError("ID must be a number", 400 );
+    // GET ONE OVERVIEW BY ID FROM DATABASE ****************************** ask gabe
+//    @GetMapping("/getbyid/{Id}")
+//    private ResponseEntity<?> getById(@PathVariable("Id") String overViewId) {
+//        try {
+//            if (ApiError.isStrNan(overViewId)) {
+//                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId + ": is not a valid id");
+//
+//            }
+//            long oId = Long.parseLong(overViewId);
+//            List<Overview> foundOverView = overviewRepository.findById(oId);
+//            if (foundOverView.isEmpty()) {
+//                ApiError.throwErr(404, "Overview with id: " + oId + " not found.");
 //
 //
-        } catch (HttpClientErrorException e) {
-            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
-        } catch (Exception e) {
-            return ApiError.genericApiError(e);
-        }
-    }
+//            }
+//            return ResponseEntity.ok(foundOverView.get(0));
+////        }catch (NumberFormatException e){
+////            return ApiErrorHandling.customApiError("ID must be a number", 400 );
+////
+////
+//        } catch (HttpClientErrorException e) {
+//            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+//        } catch (Exception e) {
+//            return ApiError.genericApiError(e);
+//        }
+//    }
 
     @GetMapping("/symbol/{symbol}")
     private ResponseEntity<?> getOverviewBySymbol(@PathVariable String symbol) {
@@ -199,7 +199,7 @@ public class OverviewController {
 //
 //            }
 
-            Overview foundOverView = overviewRepository.findBySymbol(symbol);
+            List<Overview> foundOverView = overviewRepository.findBySymbol(symbol);
             if (foundOverView == null) {
                 ApiError.throwErr(404, "Overview with symbol: " + symbol + " not found.");
 
@@ -214,7 +214,7 @@ public class OverviewController {
         }
     }
 
-    // find by excahnge
+    // find by exchange
     @GetMapping("/exchange/{exchange}")
     private ResponseEntity<?> getOverviewByExchange(@PathVariable String exchange) {
         try {
@@ -306,32 +306,32 @@ public class OverviewController {
     }
 
 
-    //try deleting something from database by ID
+    //try deleting something from database by ID ***** ask gabe
 
-    @DeleteMapping("/id/{Id}")
-    public ResponseEntity<?> deleteOverviewById(@PathVariable("Id") String overViewId) {
-        try {
-            if (ApiError.isStrNan(overViewId)) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId + ": is not Valid");
-
-            }
-            long oId = Long.parseLong(overViewId);
-            Optional<Overview> deleteOverview = overviewRepository.findById(oId);
-
-            if (deleteOverview.isEmpty()) {
-                ApiError.throwErr(400, "Overview with id" + overViewId + " did not match any overview");
-
-
-            }
-            overviewRepository.deleteById(oId);
-            return ResponseEntity.ok(deleteOverview);
-
-        } catch (HttpClientErrorException e) {
-            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
-        } catch (Exception e) {
-            return ApiError.genericApiError(e);
-        }
-    }
+//    @DeleteMapping("/id/{Id}")
+//    public ResponseEntity<?> deleteOverviewById(@PathVariable("Id") String overViewId) {
+//        try {
+//            if (ApiError.isStrNan(overViewId)) {
+//                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, overViewId + ": is not Valid");
+//
+//            }
+//            long oId = Long.parseLong(overViewId);
+//            List<Overview> deleteOverview = overviewRepository.findById(oId);
+//
+//            if (deleteOverview.isEmpty()) {
+//                ApiError.throwErr(400, "Overview with id" + overViewId + " did not match any overview");
+//
+//
+//            }
+//            overviewRepository.deleteById(oId);
+//            return ResponseEntity.ok(deleteOverview);
+//
+//        } catch (HttpClientErrorException e) {
+//            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+//        } catch (Exception e) {
+//            return ApiError.genericApiError(e);
+//        }
+//    }
 
 //    //delete by exchange
 //    @DeleteMapping("/exchange/{exchange}")
@@ -488,4 +488,102 @@ public class OverviewController {
 //
 //
 //    }
+
+
+    // Class work ************
+
+    // ad assetType, Exchange. 52weekhigh & 52 weeklow
+    // bonus Industry "security Brokers parse (, &)
+    // bonus Dividen date - figure out how to delete dividen date ("string 10-20-2000) use something with date
+    // will be challanging because every month ends on a different date.
+    @GetMapping("/{field}/{value}")
+    private ResponseEntity<?> getOverviewByField(@PathVariable String field, @PathVariable String value ) {
+        try {
+            List<Overview> foundOverview = null;
+            field = field.toLowerCase();
+            switch (field) {
+                case "symbol" -> foundOverview = overviewRepository.findBySymbol(value);
+                case "id" -> foundOverview = overviewRepository.findById(Long.parseLong(value));
+                case "sector" -> foundOverview = overviewRepository.findBySector(value);
+                case "name" -> foundOverview = overviewRepository.findByName(value);
+                case "currency" -> foundOverview = overviewRepository.findByCurrency(value);
+                case "country" -> foundOverview = overviewRepository.findByCountry(value);
+                case "marketcapgte" -> foundOverview = overviewRepository.findByMarketCapGreaterThanEqual(Long.parseLong(value));
+                case "marketcaplte" -> foundOverview = overviewRepository.findByMarketCapLessThanEqual(Long.parseLong(value));
+
+                //Getter Logic
+            }
+
+            if (foundOverview == null || foundOverview.isEmpty()){
+                ApiError.throwErr(404, field + " did not match any Overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (NumberFormatException e){
+            return ApiError.customApiError("ID must be a number:"  + field, 400 );
+
+
+
+        } catch (HttpClientErrorException e) {
+            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+        } catch (Exception e) {
+            return ApiError.genericApiError(e);
+        }
+    }
+        @DeleteMapping("/symbol/{symbol}")
+    public ResponseEntity<?> deleteOverviewBySymbol(@PathVariable String symbol) {
+        try {
+
+//            List<Overview> deleteOverview = overviewRepository.findBySymbol(symbol);
+//
+//            if (deleteOverview.isEmpty()) {
+//                ApiError.throwErr(400, "Overview with id" + symbol + " did not match any overview");
+//
+//
+//            }
+           List<Overview> deleteOverview = overviewRepository.deleteBySymbol(symbol);
+            return ResponseEntity.ok(deleteOverview);
+
+        } catch (HttpClientErrorException e) {
+            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+        } catch (Exception e) {
+            return ApiError.genericApiError(e);
+        }
+    }
+
+    @DeleteMapping("/{field}/{value}")
+    private ResponseEntity<?> deleteOverviewByField(@PathVariable String field, @PathVariable String value ) {
+        try {
+            List<Overview> foundOverview = null;
+            field = field.toLowerCase();
+            switch (field) {
+                case "symbol" -> foundOverview = overviewRepository.deleteBySymbol(value);
+                case "id" -> foundOverview = overviewRepository.deleteById(Long.parseLong(value));
+                case "sector" -> foundOverview = overviewRepository.deleteBySector(value);
+                case "name" -> foundOverview = overviewRepository.deleteByName(value);
+                case "currency" -> foundOverview = overviewRepository.deleteByCurrency(value);
+                case "country" -> foundOverview = overviewRepository.deleteByCountry(value);
+                case "marketcapgte" -> foundOverview = overviewRepository.deleteByMarketCapGreaterThanEqual(Long.parseLong(value));
+                case "marketcaplte" -> foundOverview = overviewRepository.deleteByMarketCapLessThanEqual(Long.parseLong(value));
+
+                //Getter Logic
+            }
+
+            if (foundOverview == null || foundOverview.isEmpty()){
+                ApiError.throwErr(404, field + " did not match any Overview");
+            }
+
+            return ResponseEntity.ok(foundOverview);
+        }catch (NumberFormatException e){
+            return ApiError.customApiError("ID must be a number:"  + field, 400 );
+
+
+
+        } catch (HttpClientErrorException e) {
+            return ApiError.customApiError(e.getMessage(), e.getStatusCode().value());
+        } catch (Exception e) {
+            return ApiError.genericApiError(e);
+        }
+    }
+
 }
