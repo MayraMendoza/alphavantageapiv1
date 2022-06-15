@@ -508,8 +508,15 @@ public class OverviewController {
                 case "name" -> foundOverview = overviewRepository.findByName(value);
                 case "currency" -> foundOverview = overviewRepository.findByCurrency(value);
                 case "country" -> foundOverview = overviewRepository.findByCountry(value);
+                case "assetType" -> foundOverview = overviewRepository.findByAssetType(value);
+                case "exchange" -> foundOverview = overviewRepository.findByExchange(value);
                 case "marketcapgte" -> foundOverview = overviewRepository.findByMarketCapGreaterThanEqual(Long.parseLong(value));
                 case "marketcaplte" -> foundOverview = overviewRepository.findByMarketCapLessThanEqual(Long.parseLong(value));
+                case "yearlowgte"-> foundOverview = overviewRepository.findByYearLowGreaterThanEqual(Float.parseFloat(value));
+                case "yearlowlte" -> foundOverview =overviewRepository.findByYearLowLessThanEqual(Float.parseFloat(value));
+                case "yearhighgte" -> foundOverview =  overviewRepository.findByYearHighGreaterThanEqual(Float.parseFloat(value));
+                case "yearhighlte" -> foundOverview = overviewRepository.findByYearHighLessThanEqual(Float.parseFloat(value));
+
 
                 //Getter Logic
             }
