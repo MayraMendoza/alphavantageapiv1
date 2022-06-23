@@ -19,6 +19,8 @@ import java.util.Locale;
 
 
 @RestController
+// allow cross origin to make request to server
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/overview")
 public class OverviewController {
 
@@ -516,6 +518,8 @@ public class OverviewController {
                 case "yearlowlte" -> foundOverview =overviewRepository.findByYearLowLessThanEqual(Float.parseFloat(value));
                 case "yearhighgte" -> foundOverview =  overviewRepository.findByYearHighGreaterThanEqual(Float.parseFloat(value));
                 case "yearhighlte" -> foundOverview = overviewRepository.findByYearHighLessThanEqual(Float.parseFloat(value));
+                case "dividendatelet" -> foundOverview = overviewRepository.findByDividendDateLessThanEqual(value);
+                case "dividendategte" -> foundOverview = overviewRepository.findByDividendDateGreaterThanEqual(value);
 
 
                 //Getter Logic
@@ -572,6 +576,12 @@ public class OverviewController {
                 case "country" -> foundOverview = overviewRepository.deleteByCountry(value);
                 case "marketcapgte" -> foundOverview = overviewRepository.deleteByMarketCapGreaterThanEqual(Long.parseLong(value));
                 case "marketcaplte" -> foundOverview = overviewRepository.deleteByMarketCapLessThanEqual(Long.parseLong(value));
+                case "yearlowgte"-> foundOverview = overviewRepository.deleteByYearLowGreaterThanEqual(Float.parseFloat(value));
+                case "yearlowlte" -> foundOverview =overviewRepository.deleteByYearLowLessThanEqual(Float.parseFloat(value));
+                case "dividendatelet" -> foundOverview = overviewRepository.deleteByDividendDateLessThanEqual(value);
+                case "dividendategte" -> foundOverview = overviewRepository.deleteByDividendDateGreaterThanEqual(value);
+                case "yearhighgte" -> foundOverview =  overviewRepository.deleteByYearHighGreaterThanEqual(Float.parseFloat(value));
+                case "yearhighlte" -> foundOverview = overviewRepository.deleteByYearHighLessThanEqual(Float.parseFloat(value));
 
                 //Getter Logic
             }

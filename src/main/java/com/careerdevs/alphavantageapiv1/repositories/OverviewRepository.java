@@ -29,6 +29,9 @@ public interface OverviewRepository extends JpaRepository<Overview, Long> {
      List<Overview> findByYearHighLessThanEqual(float yearHigh);
      List<Overview> findByYearLowGreaterThanEqual(float yearLow);
      List<Overview> findByYearLowLessThanEqual(float yearLow);
+     List<Overview> findByDividendDateLessThanEqual(String dividendDate);
+     List<Overview> findByDividendDateGreaterThanEqual(String dividendDate);
+
 
 
      List<Overview> deleteByExchange(String exchange);
@@ -45,6 +48,8 @@ public interface OverviewRepository extends JpaRepository<Overview, Long> {
      List<Overview> deleteByYearHighLessThanEqual(float yearHigh);
      List<Overview> deleteByYearLowGreaterThanEqual(float yearLow);
      List<Overview> deleteByYearLowLessThanEqual(float yearLow);
+     List<Overview> deleteByDividendDateLessThanEqual(String dividendDate);
+     List<Overview> deleteByDividendDateGreaterThanEqual(String dividendDate);
 
      List<Overview> findByMarketCap(long marketCap);
 
