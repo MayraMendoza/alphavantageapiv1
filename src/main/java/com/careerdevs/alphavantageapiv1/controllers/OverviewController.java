@@ -146,7 +146,7 @@ public class OverviewController {
         }
     }
 
-    @DeleteMapping("/deleteall")
+    @DeleteMapping("/all")
     public ResponseEntity<?> deleteAllFromDatabase() {
         try {
             long totalProfiles = overviewRepository.count();

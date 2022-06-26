@@ -32,8 +32,6 @@ public interface OverviewRepository extends JpaRepository<Overview, Long> {
      List<Overview> findByDividendDateLessThanEqual(String dividendDate);
      List<Overview> findByDividendDateGreaterThanEqual(String dividendDate);
 
-
-
      List<Overview> deleteByExchange(String exchange);
      List<Overview> deleteByCurrency(String currency);
      List<Overview> deleteByCountry(String country);
