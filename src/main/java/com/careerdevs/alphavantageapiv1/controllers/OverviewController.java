@@ -287,6 +287,7 @@ public class OverviewController {
         }
     }
 
+
     //@JsonProperty("AssetType")
     //    @Column(name= "asset_type", nullable = false)
     //    private String assetType;
